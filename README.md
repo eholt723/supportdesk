@@ -44,10 +44,15 @@ Customer /submit form
                                to customer
 ```
 
-**Classify** — Groq LLM reads the ticket and outputs `{type, urgency, confidence}`.
-**Search** — fastembed encodes the ticket; pgvector returns the top 3 matching KB chunks by cosine similarity.
-**Draft** — Groq LLM generates a response grounded in the retrieved passages. Tokens stream via SSE.
-**Approve** — Agent reviews the draft and sources, edits if needed, clicks Approve. Resend delivers the reply.
+| Layer | Responsibility |
+|---|---|
+| Webhook | Receives tickets via HMAC-SHA256 signed POST; logs event, creates DB record, fires pipeline |
+| Classify | Groq LLM reads subject + body; returns `{type, urgency, confidence}` |
+| Search | fastembed encodes the ticket; pgvector returns top-3 KB chunks by cosine similarity |
+| Draft | Groq LLM generates a grounded reply from retrieved passages; streams tokens via SSE |
+| Agent | Reviews draft and sources in the dashboard; edits inline, approves or discards |
+| Delivery | Resend sends the approved reply to the customer's email address |
+| Event Log | Every stage broadcasts over WebSocket to the live dashboard in real time |
 
 ## Stack
 
@@ -60,9 +65,57 @@ Customer /submit form
 | Database | PostgreSQL on Neon |
 | Email | Resend |
 | Real-time | SSE (draft streaming), WebSocket (event log) |
-| Frontend | React, Vite, Tailwind CSS |
+| Frontend | React 19, Vite, Tailwind CSS, Recharts |
 | Hosting | Hugging Face Spaces (Docker) |
 | CI | GitHub Actions |
+| Testing | pytest 8.3, pytest-asyncio, pytest-cov (71 tests) |
+
+## Project Structure
+
+```
+supportdesk/
+├── Dockerfile                        # Multi-stage: builds React, runs FastAPI on port 7860
+├── docker_entrypoint.py              # Runs migrations, mounts SPA, starts uvicorn
+├── backend/
+│   ├── pyproject.toml                # Project metadata, pytest config, coverage config
+│   ├── requirements.txt              # Python dependencies
+│   ├── app/
+│   │   ├── main.py                   # FastAPI app, CORS, router registration, lifespan
+│   │   ├── config.py                 # Pydantic settings loaded from environment
+│   │   ├── pipeline.py               # Orchestrates classify → search → draft stages
+│   │   ├── classify.py               # Groq LLM ticket classification
+│   │   ├── search.py                 # fastembed embeddings + pgvector similarity search
+│   │   ├── draft.py                  # Groq LLM response generation with SSE streaming
+│   │   ├── security.py               # HMAC-SHA256 webhook signature + replay protection
+│   │   ├── events.py                 # In-process WebSocket broadcast bus
+│   │   ├── sse.py                    # Per-ticket SSE token streaming
+│   │   ├── database.py               # asyncpg connection pool singleton
+│   │   ├── models.py                 # Pydantic request/response schemas
+│   │   └── routers/
+│   │       ├── webhook.py            # POST /api/webhook/ticket
+│   │       ├── tickets.py            # Ticket CRUD, approve, discard, SSE stream
+│   │       ├── kb.py                 # Knowledge base CRUD and .txt file upload
+│   │       ├── pipeline.py           # Manual pipeline trigger
+│   │       └── events.py             # WebSocket /api/events/ws + recent events
+│   ├── migrations/
+│   │   ├── 001_initial_schema.sql    # Tables: tickets, kb_chunks, draft_responses, pipeline_runs
+│   │   ├── 002_demo_tickets.sql      # Pre-classified demo tickets for instant showcase
+│   │   └── run_migrations.py         # Runs all .sql files in order on startup
+│   ├── kb_documents/                 # Plain-text source files for the knowledge base
+│   ├── scripts/
+│   │   └── ingest_kb.py             # Chunks, embeds, and loads kb_documents/ into pgvector
+│   └── tests/                        # 71 pytest tests — unit + integration
+└── frontend/
+    └── src/
+        ├── pages/
+        │   ├── Dashboard.jsx         # Ticket queue, stat cards, live WebSocket event log
+        │   ├── TicketDetail.jsx      # Pipeline stages, RAG sources, SSE draft stream
+        │   ├── KB.jsx                # Knowledge base viewer and .txt upload
+        │   ├── Submit.jsx            # Public ticket submission form
+        │   └── About.jsx             # Project showcase and pipeline walkthrough
+        ├── api.js                    # Fetch wrappers for all backend endpoints
+        └── App.jsx                   # React Router route definitions
+```
 
 ## Pages
 
