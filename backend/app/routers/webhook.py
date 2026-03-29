@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import json
 import time
 
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
@@ -84,6 +85,6 @@ async def _log_webhook_event(raw_body: bytes, signature_valid: bool, payload: di
             """,
             payload_hash,
             signature_valid,
-            payload,
+            json.dumps(payload) if payload is not None else None,
         )
     return row_id

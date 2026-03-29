@@ -119,6 +119,8 @@ async def _run_stage(ticket_id: int, stage: str, fn, *args) -> Any | None:
             )
         return result
     except Exception as exc:
+        import traceback
+        traceback.print_exc()
         duration_ms = int((time.monotonic() - start) * 1000)
         async with pool.acquire() as conn:
             await conn.execute(
