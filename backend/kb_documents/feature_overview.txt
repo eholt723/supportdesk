@@ -1,0 +1,70 @@
+Vela Feature Overview
+
+This document describes what is included in each Vela plan.
+
+Starter Plan
+The Starter plan is designed for individuals and small teams getting started with project management.
+- Up to 5 active projects
+- Up to 3 workspace members
+- Unlimited tasks per project
+- List and board (Kanban) views
+- File attachments up to 25 MB
+- CSV export
+- Email support (48-hour response SLA)
+- 5 GB storage
+
+Pro Plan
+The Pro plan is designed for growing teams that need more power and flexibility.
+- Unlimited projects
+- Unlimited workspace members
+- All Starter features, plus:
+- Timeline (Gantt) view
+- Custom fields (text, number, date, select, multi-select)
+- Time tracking
+- PDF export
+- REST API access (10,000 requests/month)
+- Priority support (24-hour response SLA)
+- Reporting and analytics dashboard
+- Recurring tasks
+- Guest access (view-only, doesn't count as a seat)
+- File attachments up to 100 MB
+- 50 GB storage
+- SSO via Google and Microsoft
+
+API access is available on Pro and Business plans. The Vela REST API supports all core resources including projects, tasks, members, and comments. Full documentation at docs.vela.app/api. To access your API key, go to Settings > Developer > API Keys.
+
+Business Plan
+The Business plan is designed for larger organizations that need enterprise-grade control and compliance.
+- All Pro features, plus:
+- Unlimited API requests
+- Webhook support (send events to your own endpoints)
+- OAuth app creation (build integrations that authenticate as Vela users)
+- Advanced permissions (field-level, project-level, and member-level controls)
+- Audit log (full history of all workspace actions)
+- SAML/OIDC SSO (enforce login through your identity provider)
+- Admin dashboard
+- 99.9% uptime SLA
+- File attachments up to 250 MB
+- Unlimited storage
+- Dedicated account manager for teams over 50 seats
+- Priority phone support
+
+Comparing Plans
+Feature                     | Starter | Pro     | Business
+Projects                    | 5       | ∞       | ∞
+Members                     | 3       | ∞       | ∞
+API access                  | No      | Yes     | Yes
+Webhooks                    | No      | No      | Yes
+Custom fields               | No      | Yes     | Yes
+Timeline view               | No      | Yes     | Yes
+Time tracking               | No      | Yes     | Yes
+SSO                         | No      | Google/MS| SAML/OIDC
+Audit log                   | No      | No      | Yes
+Storage                     | 5 GB    | 50 GB   | Unlimited
+Support SLA                 | 48 hr   | 24 hr   | 4 hr
+
+Add-ons
+Additional storage can be purchased for Starter and Pro plans at $5/month per 10 GB. Additional API requests beyond the Pro limit (10,000/month) are available as a block add-on at $10/month per 10,000 requests.
+
+Free trial
+All paid plans include a 14-day free trial. No credit card is required to start a trial. At the end of the trial period, your workspace automatically downgrades to Starter unless you add a payment method.

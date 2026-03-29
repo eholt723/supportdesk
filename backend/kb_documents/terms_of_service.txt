@@ -1,0 +1,34 @@
+Vela Terms of Service — Key Clauses Summary
+
+This document summarizes the key clauses of the Vela Terms of Service for support reference purposes.
+
+Service availability and uptime
+Vela provides a commercially reasonable uptime target of 99.5% for Starter and Pro plans, and a contractual 99.9% SLA for Business plans. Scheduled maintenance windows are announced at least 48 hours in advance via the status page (status.vela.app) and do not count toward downtime calculations. Unplanned outages that exceed 1 hour in a calendar month may qualify for a service credit of 5% of the monthly fee per additional hour of downtime, up to 30% of monthly fees. Credits must be requested within 30 days of the incident.
+
+Cancellation and refunds
+Customers may cancel at any time through the account settings. Cancellations take effect at the end of the current billing period. Vela will refund any charges that occur due to a platform error preventing cancellation, provided the customer contacts support within 30 days. Annual plan purchases are eligible for a full refund within 14 days of the purchase date if usage remains minimal (fewer than 5 projects created and fewer than 3 members invited).
+
+Data retention and deletion
+Upon cancellation, customer data is retained for 30 days in a read-only state. During this period, customers can export their data. After 30 days, all customer data is permanently and irreversibly deleted from Vela's systems. Vela does not sell or share customer data with third parties. Customer data is encrypted in transit (TLS 1.2+) and at rest (AES-256).
+
+Acceptable use
+Customers may not use Vela to store or transmit illegal content, to conduct phishing or fraud, to perform automated scraping beyond what the API permits, or to attempt to circumvent the platform's security controls. Violations may result in immediate account suspension without refund.
+
+Support response times
+Vela commits to the following first-response SLAs:
+- Starter: 48 business hours
+- Pro: 24 hours (including weekends for urgent issues)
+- Business: 4 hours
+
+These SLAs apply to tickets submitted through the official support channels (in-app widget, support@vela.app, or help.vela.app). Tickets submitted through social media or unofficial channels are not covered by SLA commitments.
+
+If Vela fails to meet the support SLA for a Pro or Business customer, the customer is entitled to request a service credit equivalent to one day of their subscription fee per SLA breach, up to a maximum of 7 days per calendar month.
+
+Intellectual property
+Customers retain ownership of all data and content they create in Vela. Vela retains ownership of the platform, its underlying technology, and any aggregated, anonymized usage data used to improve the service. By using Vela, customers grant Vela a limited license to process their data solely to provide the service.
+
+Limitation of liability
+Vela's total liability to any customer in any 12-month period is limited to the amount paid by that customer to Vela during that period. Vela is not liable for indirect, incidental, or consequential damages.
+
+Changes to terms
+Vela may update these terms with 30 days' notice via email to the workspace owner. Continued use of the service after the effective date of changes constitutes acceptance of the new terms. If a customer objects to changes, they may cancel their subscription before the effective date and receive a prorated refund for any prepaid annual subscription fees.

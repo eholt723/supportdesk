@@ -1,0 +1,47 @@
+Vela Getting Started Guide
+
+Welcome to Vela
+Vela is a project management tool built for teams who need clarity without complexity. This guide covers everything you need to get your workspace set up and your team moving.
+
+Creating your workspace
+When you first sign up, you will be prompted to create a workspace. Your workspace is the top-level container for all your projects, members, and settings. Choose a name that reflects your team or organization. You can rename your workspace at any time from Settings > Workspace.
+
+Inviting team members
+Go to Settings > Members > Invite Members and enter the email addresses of the people you want to add. They will receive an invitation email with a link to join. Members can be assigned one of three roles:
+- Owner: full administrative access, manages billing and workspace settings
+- Admin: can create and delete projects, manage members, but cannot access billing
+- Member: can create and edit tasks within projects they are assigned to
+
+Creating your first project
+Click "New Project" from the dashboard or sidebar. Enter a project name and optional description. You can choose a list view, board view (Kanban), or timeline view as your default. Projects can be made private (visible only to assigned members) or open (visible to all workspace members).
+
+Adding and managing tasks
+Within a project, click "Add Task" or press N to create a new task. Each task can have:
+- Title and description
+- Assignee (one or more workspace members)
+- Due date
+- Priority (low, medium, high, urgent)
+- Custom fields (available on Pro and Business plans)
+- Attachments and comments
+
+Organizing with sections
+Tasks can be grouped into sections within a project. Sections function like swimlanes in board view or collapsible groups in list view. To add a section, click "Add Section" at the bottom of your task list.
+
+Using the inbox
+The inbox in the left sidebar collects all notifications: task assignments, comments mentioning you (@username), due date reminders, and status changes on tasks you follow. Mark items as read or archive them to keep your inbox clean.
+
+Exporting project data
+Navigate to your project, click the three-dot menu in the top right, and select Export. Choose CSV for a spreadsheet-compatible format or PDF for a formatted report. Note: export is available on Starter and above for CSV; PDF export requires Pro or higher.
+
+To access your API key, go to Settings > Developer > API Keys. API keys are scoped per workspace and can be rotated at any time. Each key can be restricted to read-only or full access.
+
+Keyboard shortcuts
+- N: new task
+- Cmd/Ctrl + K: command palette (search anything)
+- Cmd/Ctrl + P: print / export current view
+- G then D: go to dashboard
+- G then I: go to inbox
+- ?: show all shortcuts
+
+Getting help
+Vela support can be reached via the in-app help widget (click the ? icon in the bottom right), email at support@vela.app, or by submitting a ticket at help.vela.app. Pro customers receive a 24-hour response SLA. Business customers receive a 4-hour response SLA.

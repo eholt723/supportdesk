@@ -1,0 +1,50 @@
+Vela Troubleshooting Guide
+
+This guide covers the most common issues users encounter and how to resolve them.
+
+Login and authentication issues
+
+I can't log in to my account
+First, confirm you are using the correct email address associated with your Vela account. Use "Forgot Password" on the login page to reset your password. If you use Google or Microsoft SSO, make sure you click "Continue with Google/Microsoft" rather than entering a password manually. If your workspace uses enforced SSO, you must log in through your identity provider — direct password login will be blocked.
+
+My SSO login stopped working
+Contact your workspace admin. SSO configuration (SAML/OIDC) is managed at the workspace level. If your company recently changed identity providers or rotated certificates, the admin will need to update the SSO settings under Settings > Security > SSO Configuration.
+
+Export issues
+
+The export button isn't working or produces an empty file
+If CSV export produces an empty or incomplete file, try using the Print View as a workaround. This is available from any project view via Cmd+P (Mac) or Ctrl+P (Windows). Print View renders the full task list and can be saved as PDF.
+
+If the export button doesn't respond at all, try: (1) hard-refreshing the page (Cmd+Shift+R / Ctrl+Shift+R), (2) clearing browser cache, (3) trying a different browser. If the issue persists, contact support — export failures are typically server-side and our team can generate the export manually.
+
+Common errors after updates
+Some features may be temporarily unavailable following a platform release. Check the Vela status page at status.vela.app for known issues and estimated resolution times. If you experience a regression (something that worked before and no longer does after an update), report it via support@vela.app with your browser version and a description of what stopped working.
+
+Performance issues
+
+Vela is loading slowly
+Slow load times are usually caused by one of: (1) a large number of tasks in a single view — try filtering or switching to a focused view, (2) many browser tabs open — Vela uses background sync that can compete with other tabs, (3) a network issue — test your connection speed. If the issue is consistent across different networks and browsers, contact support.
+
+Notifications and integrations
+
+I'm not receiving email notifications
+Check Settings > Notifications to confirm email notifications are enabled for the event types you expect. Also check your spam folder — Vela sends from notifications@vela.app. If you use a corporate email, ask your IT team to whitelist the vela.app domain.
+
+My Slack integration stopped posting
+Slack integrations can break if the authorizing user loses Slack workspace permissions or if the Slack app is uninstalled. Go to Settings > Integrations > Slack and reconnect. If reconnecting doesn't help, disconnect and re-authorize from scratch.
+
+Billing and account
+
+I see an unexpected charge on my statement
+Log in to Settings > Billing > Billing History to review all charges. Each line item shows the date, amount, and what it covers (subscription renewal, seat addition, etc.). If you see a charge you don't recognize, contact support with the amount and date and we will investigate.
+
+I can't access a feature that should be on my plan
+Go to Settings > Billing to confirm your current plan and renewal date. If your plan recently renewed but features are not available, try logging out and back in to refresh your session. If the issue persists, contact support — plan changes can occasionally require a cache refresh on the backend.
+
+Data and files
+
+An attachment won't upload
+Maximum file size is 25 MB per attachment on Starter, 100 MB on Pro, and 250 MB on Business. Supported formats include images (PNG, JPG, GIF, WebP), documents (PDF, DOCX, XLSX, PPTX), and archives (ZIP). If your file is within the size limit and still won't upload, try a different browser or disable browser extensions that intercept file uploads.
+
+I accidentally deleted a task
+Deleted tasks are recoverable within 30 days from Settings > Trash. Search for the task by name and click Restore. Tasks restored from trash retain all their data including comments, attachments, and history.

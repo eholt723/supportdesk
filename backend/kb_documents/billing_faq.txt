@@ -1,0 +1,31 @@
+Vela Billing FAQ
+
+How do I cancel my subscription?
+To cancel your subscription, navigate to Settings > Billing > Cancel Plan. Click "Cancel Subscription" and follow the confirmation steps. Cancellations take effect at the end of your current billing period — you will retain full access until that date. If you experience issues with the cancellation flow (such as the button not responding), contact support and we will process the cancellation manually within one business day.
+
+Will I receive a refund if I cancel?
+Vela does not offer prorated refunds for mid-cycle cancellations under standard terms. However, if you cancel within 7 days of your renewal date and have not used the account during that period, you may be eligible for a full refund of the most recent charge. Contact support with your request and we will review it. Refunds for charges made after a verified cancellation attempt are issued automatically within 3-5 business days.
+
+What happens to my data after cancellation?
+Your data is retained for 30 days after your subscription ends. During that period you can export your projects and tasks in CSV or JSON format from Settings > Data Export. After 30 days, data is permanently deleted in accordance with our data retention policy.
+
+How do I change my plan?
+To upgrade or downgrade, go to Settings > Billing > Change Plan. Upgrades take effect immediately and you are charged a prorated amount for the remainder of the billing period. Downgrades take effect at the next billing renewal. If you downgrade to a plan with lower limits (e.g., fewer seats or projects), excess resources become read-only until you bring them within the new plan limits.
+
+What payment methods does Vela accept?
+Vela accepts all major credit and debit cards (Visa, Mastercard, Amex, Discover) and ACH bank transfers for annual plans. We do not currently accept PayPal, cryptocurrency, or purchase orders for plans under $1,000/year.
+
+Why was I charged after I cancelled?
+This can happen if the cancellation did not process successfully. Log in and check Settings > Billing to confirm your subscription status. If it still shows as active after you attempted to cancel, contact support immediately with your account email and the date you attempted to cancel. We will process the cancellation and issue a refund for any charges that occurred after your verified cancellation attempt.
+
+Can I pause my subscription instead of cancelling?
+Yes, Pro and Business customers can pause their subscription for up to 3 months. During a pause, your account data is preserved but you cannot add new projects or invite new members. To pause, contact support — this option is not yet available through self-service.
+
+How do team billing and seats work?
+Each seat covers one user. The plan owner is billed based on the number of active seats each month. If you remove a member mid-cycle, the seat is freed at the next billing renewal. Adding a member mid-cycle incurs a prorated charge immediately.
+
+What is the refund policy for annual plans?
+Annual plans are eligible for a full refund within 14 days of purchase if you have not exceeded 5 projects or 3 active members. After 14 days, annual plans are non-refundable but you may cancel to stop future renewals.
+
+Account credits
+Account credits may be applied at the discretion of the support team to acknowledge service failures or extended outages. Credits appear on the next billing statement and are applied before any card charge. Credits do not expire as long as your account remains active.
