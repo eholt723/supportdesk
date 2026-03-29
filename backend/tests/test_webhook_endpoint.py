@@ -29,6 +29,7 @@ def client():
 
         with patch("app.security.settings") as mock_sec_settings, \
              patch("app.database.get_pool") as mock_pool_fn, \
+             patch("app.routers.webhook.get_pool") as mock_wh_pool_fn, \
              patch("app.routers.webhook.run_pipeline"), \
              patch("app.routers.webhook.event_bus.broadcast", new_callable=AsyncMock):
             mock_sec_settings.webhook_secret = SECRET
@@ -42,6 +43,7 @@ def client():
                 __aexit__=AsyncMock(return_value=False),
             ))
             mock_pool_fn.return_value = mock_pool
+            mock_wh_pool_fn.return_value = mock_pool
 
             from app.main import app
             yield TestClient(app, raise_server_exceptions=False)

@@ -1,0 +1,46 @@
+[project]
+name = "supportdesk"
+version = "0.1.0"
+description = "AI-powered customer support automation"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.32.1",
+    "asyncpg==0.30.0",
+    "psycopg2-binary==2.9.10",
+    "pgvector==0.3.6",
+    "fastembed==0.4.1",
+    "groq==0.12.0",
+    "resend==2.4.0",
+    "python-dotenv==1.0.1",
+    "httpx==0.28.1",
+    "pydantic==2.10.4",
+    "pydantic-settings==2.7.0",
+    "python-multipart==0.0.20",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "pytest-httpx==0.35.0",
+    "pytest-cov==6.0.0",
+    "numpy",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--tb=short"
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "tests/*",
+    "migrations/*",
+    "scripts/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
