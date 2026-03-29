@@ -1,3 +1,13 @@
+---
+title: SupportDesk
+emoji: 🎧
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # SupportDesk
 
 [![CI](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml/badge.svg)](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml)
