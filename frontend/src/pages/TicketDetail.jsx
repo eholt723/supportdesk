@@ -81,8 +81,8 @@ function SourceModal({ source, onClose }) {
 
   useEffect(() => {
     get(`/api/kb/chunks?document_name=${encodeURIComponent(source.document_name)}&limit=100`)
-      .then(setChunks)
-      .catch(() => setChunks([]))
+      .then((data) => setChunks(data.length > 0 ? data : [{ id: source.id, chunk_text: source.chunk_text }]))
+      .catch(() => setChunks([{ id: source.id, chunk_text: source.chunk_text }]))
       .finally(() => setLoading(false));
   }, [source.document_name]);
 
@@ -110,12 +110,10 @@ function SourceModal({ source, onClose }) {
         <div className="overflow-y-auto p-5 space-y-3">
           {loading ? (
             <p className="text-sm text-gray-400">Loading chunks...</p>
-          ) : chunks.length === 0 ? (
-            <p className="text-sm text-gray-400">No chunks found.</p>
           ) : (
             chunks.map((chunk, i) => (
               <div
-                key={chunk.id}
+                key={chunk.id ?? i}
                 className={`rounded-lg p-3 space-y-1 border ${chunk.chunk_text === source.chunk_text
                   ? "border-cyan-400 dark:border-cyan-600 bg-cyan-50 dark:bg-cyan-900/20"
                   : "border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950"
