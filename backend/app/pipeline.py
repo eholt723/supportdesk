@@ -122,10 +122,11 @@ async def _run_stage(ticket_id: int, stage: str, fn, *args) -> Any | None:
         import traceback
         traceback.print_exc()
         duration_ms = int((time.monotonic() - start) * 1000)
+        error_msg = f"{type(exc).__name__}: {exc}"
         async with pool.acquire() as conn:
             await conn.execute(
-                "UPDATE pipeline_runs SET status = 'failed', duration_ms = $1 WHERE id = $2",
-                duration_ms, run_id,
+                "UPDATE pipeline_runs SET status = 'failed', duration_ms = $1, error = $2 WHERE id = $3",
+                duration_ms, error_msg, run_id,
             )
         await event_bus.broadcast(
             "ERROR",
