@@ -149,13 +149,6 @@ export default function KB() {
                   </svg>
                 </div>
               </button>
-              <button
-                onClick={() => handleDelete(doc.document_name)}
-                className="ml-4 text-xs text-gray-400 hover:text-red-500 transition-colors shrink-0"
-                title="Delete document"
-              >
-                &#10005;
-              </button>
             </div>
 
             {selected === doc.document_name && (

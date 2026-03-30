@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { get, post, sseUrl } from "../api";
 
+const API_BASE = import.meta.env.VITE_API_URL ?? "";
+
 // ---------------------------------------------------------------------------
 // Badges (duplicated from Dashboard to keep pages self-contained)
 // ---------------------------------------------------------------------------
@@ -70,21 +72,82 @@ function PipelineStages({ stages }) {
 }
 
 // ---------------------------------------------------------------------------
+// KB source modal
+// ---------------------------------------------------------------------------
+
+function SourceModal({ source, onClose }) {
+  const [chunks, setChunks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    get(`/api/kb/chunks?document_name=${encodeURIComponent(source.document_name)}&limit=100`)
+      .then(setChunks)
+      .catch(() => setChunks([]))
+      .finally(() => setLoading(false));
+  }, [source.document_name]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 shrink-0">
+          <div>
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{source.document_name}</p>
+            <p className="text-xs text-gray-500 mt-0.5">Knowledge base source</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg leading-none"
+          >
+            &#10005;
+          </button>
+        </div>
+        <div className="overflow-y-auto p-5 space-y-3">
+          {loading ? (
+            <p className="text-sm text-gray-400">Loading chunks...</p>
+          ) : chunks.length === 0 ? (
+            <p className="text-sm text-gray-400">No chunks found.</p>
+          ) : (
+            chunks.map((chunk, i) => (
+              <div
+                key={chunk.id}
+                className={`rounded-lg p-3 space-y-1 border ${chunk.chunk_text === source.chunk_text
+                  ? "border-cyan-400 dark:border-cyan-600 bg-cyan-50 dark:bg-cyan-900/20"
+                  : "border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950"
+                }`}
+              >
+                <p className="text-xs text-cyan-600 dark:text-cyan-400 font-mono">chunk {i + 1}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{chunk.chunk_text}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Source passage card
 // ---------------------------------------------------------------------------
 
-function SourceCard({ source, index }) {
+function SourceCard({ source, index, onOpen }) {
   const score = source.score ?? 0;
   const pct = Math.round(score * 100);
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 p-4 space-y-2">
       <div className="flex items-center justify-between">
-        <Link
-          to={`/kb?doc=${encodeURIComponent(source.document_name)}`}
-          className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:underline"
+        <button
+          onClick={() => onOpen(source)}
+          className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:underline text-left"
         >
           [{index + 1}] {source.document_name}
-        </Link>
+        </button>
         <span className={`text-xs px-1.5 py-0.5 rounded font-mono ${
           pct >= 80 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" :
           pct >= 60 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" :
@@ -115,6 +178,8 @@ export default function TicketDetail() {
   const [editedText, setEditedText] = useState(null); // null = show draft, string = editing
   const [approving, setApproving] = useState(false);
   const [actionResult, setActionResult] = useState(null); // {ok, message}
+  const [modalSource, setModalSource] = useState(null);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     get(`/api/tickets/${id}`)
@@ -173,6 +238,23 @@ export default function TicketDetail() {
     }
   }
 
+  async function handleReset() {
+    setResetting(true);
+    try {
+      await post(`/api/tickets/${id}/reset`, {});
+      setStreamedText("");
+      setEditedText(null);
+      setActionResult(null);
+      const t = await get(`/api/tickets/${id}`);
+      setTicket(t);
+      startStream();
+    } catch (e) {
+      setActionResult({ ok: false, message: e.message });
+    } finally {
+      setResetting(false);
+    }
+  }
+
   if (loading) return <p className="text-gray-500 text-sm">Loading...</p>;
   if (error) return <p className="text-red-500 text-sm">{error}</p>;
   if (!ticket) return null;
@@ -184,6 +266,7 @@ export default function TicketDetail() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+      {modalSource && <SourceModal source={modalSource} onClose={() => setModalSource(null)} />}
 
       {/* Back link */}
       <Link to="/" className="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">
@@ -229,7 +312,7 @@ export default function TicketDetail() {
             Sources Used ({sources.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {sources.map((s, i) => <SourceCard key={i} source={s} index={i} />)}
+            {sources.map((s, i) => <SourceCard key={i} source={s} index={i} onOpen={setModalSource} />)}
           </div>
         </div>
       )}
@@ -307,10 +390,21 @@ export default function TicketDetail() {
             </button>
           </div>
         )}
-        {ticket.status === "sent" && draft?.sent_at && (
-          <p className="text-xs text-emerald-500">
-            Sent {new Date(draft.sent_at).toLocaleString()}
-          </p>
+        {ticket.status === "sent" && (
+          <div className="flex items-center gap-4">
+            {draft?.sent_at && (
+              <p className="text-xs text-emerald-500">
+                Sent {new Date(draft.sent_at).toLocaleString()}
+              </p>
+            )}
+            <button
+              onClick={handleReset}
+              disabled={resetting}
+              className="text-xs text-gray-400 hover:text-cyan-500 disabled:opacity-50 transition-colors"
+            >
+              {resetting ? "Resetting..." : "Reset demo"}
+            </button>
+          </div>
         )}
       </div>
 

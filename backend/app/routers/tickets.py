@@ -166,3 +166,18 @@ async def discard_ticket(ticket_id: int):
     if result == "UPDATE 0":
         raise HTTPException(status_code=409, detail="Ticket not in pending state")
     return {"status": "discarded"}
+
+
+@router.post("/{ticket_id}/reset")
+async def reset_ticket(ticket_id: int):
+    """Reset a ticket to pending so the full pipeline can be re-run (demo use)."""
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        ticket = await conn.fetchrow("SELECT id FROM tickets WHERE id = $1", ticket_id)
+        if not ticket:
+            raise HTTPException(status_code=404, detail="Ticket not found")
+        await conn.execute("DELETE FROM draft_responses WHERE ticket_id = $1", ticket_id)
+        await conn.execute("DELETE FROM pipeline_runs WHERE ticket_id = $1", ticket_id)
+        await conn.execute("DELETE FROM delivery_log WHERE ticket_id = $1", ticket_id)
+        await conn.execute("UPDATE tickets SET status = 'pending', type = NULL, urgency = NULL WHERE id = $1", ticket_id)
+    return {"status": "pending"}
