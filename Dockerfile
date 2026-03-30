@@ -6,7 +6,9 @@ RUN npm ci
 COPY frontend/ ./
 ARG VITE_API_URL=""
 ARG VITE_WEBHOOK_SECRET=""
-RUN npm run build
+RUN --mount=type=secret,id=VITE_WEBHOOK_SECRET \
+    VITE_WEBHOOK_SECRET=$(cat /run/secrets/VITE_WEBHOOK_SECRET 2>/dev/null || echo "$VITE_WEBHOOK_SECRET") \
+    npm run build
 
 # Stage 2: Python backend + serve built frontend
 FROM python:3.12-slim
