@@ -189,7 +189,7 @@ export default function TicketDetail() {
         // If draft exists already, show it; otherwise start SSE stream
         if (t.draft?.draft_text) {
           setStreamedText(t.draft.draft_text);
-        } else {
+        } else if (t.pipeline_stages?.length > 0) {
           startStream();
         }
       })
