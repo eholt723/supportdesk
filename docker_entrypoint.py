@@ -38,10 +38,13 @@ if __name__ == "__main__":
     frontend_dist = "/app/frontend/dist"
     if os.path.isdir(frontend_dist):
         app.mount("/assets", StaticFiles(directory=f"{frontend_dist}/assets"), name="assets")
+        app.mount("/static", StaticFiles(directory=frontend_dist), name="static-root")
 
         @app.get("/{full_path:path}", include_in_schema=False)
         async def spa_fallback(full_path: str):
-            # API routes are handled by their own routers before this catch-all
+            file_path = f"{frontend_dist}/{full_path}"
+            if os.path.isfile(file_path):
+                return FileResponse(file_path)
             return FileResponse(f"{frontend_dist}/index.html")
 
     port = int(os.environ.get("PORT", 7860))
