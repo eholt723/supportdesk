@@ -79,9 +79,12 @@ function SourceCard({ source, index }) {
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 p-4 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-cyan-600 dark:text-cyan-400">
+        <Link
+          to={`/kb?doc=${encodeURIComponent(source.document_name)}`}
+          className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:underline"
+        >
           [{index + 1}] {source.document_name}
-        </span>
+        </Link>
         <span className={`text-xs px-1.5 py-0.5 rounded font-mono ${
           pct >= 80 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" :
           pct >= 60 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" :

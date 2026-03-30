@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { get } from "../api";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
 export default function KB() {
+  const [searchParams] = useSearchParams();
   const [docs, setDocs] = useState([]);
   const [selected, setSelected] = useState(null);
   const [chunks, setChunks] = useState([]);
@@ -12,13 +14,31 @@ export default function KB() {
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
   const fileRef = useRef(null);
+  const focusedChunkRef = useRef(null);
+
+  useEffect(() => {
+    if (!chunksLoading && selected && focusedChunkRef.current) {
+      focusedChunkRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [chunksLoading]);
 
   function loadDocs() {
     return get("/api/kb").then(setDocs).catch(() => {});
   }
 
   useEffect(() => {
-    loadDocs().finally(() => setLoading(false));
+    const docParam = searchParams.get("doc");
+    loadDocs().finally(() => {
+      setLoading(false);
+      if (docParam) {
+        setSelected(docParam);
+        setChunksLoading(true);
+        get(`/api/kb/chunks?document_name=${encodeURIComponent(docParam)}&limit=100`)
+          .then(setChunks)
+          .catch(() => setChunks([]))
+          .finally(() => setChunksLoading(false));
+      }
+    });
   }, []);
 
   function selectDoc(docName) {
@@ -107,7 +127,7 @@ export default function KB() {
           <p className="text-gray-500 text-sm p-6">No documents loaded.</p>
         )}
         {docs.map((doc) => (
-          <div key={doc.document_name}>
+          <div key={doc.document_name} ref={selected === doc.document_name ? focusedChunkRef : null}>
             <div className="flex items-center px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <button
                 onClick={() => selectDoc(doc.document_name)}

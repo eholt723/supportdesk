@@ -38,6 +38,33 @@ const PIPELINE_STEPS = [
   },
 ];
 
+const USE_CASES = [
+  {
+    title: "SaaS Companies",
+    desc: "Handle high ticket volume without growing your support team. SupportDesk drafts grounded replies from your own docs before an agent ever opens the ticket.",
+  },
+  {
+    title: "E-commerce & Retail",
+    desc: "Automatically draft answers to shipping delays, return policies, and billing disputes — pulled from your actual policy documents, not hallucinated.",
+  },
+  {
+    title: "Financial Services & Fintech",
+    desc: "Surface the right policy or compliance language before an agent responds. Every draft cites the source it was grounded in, so nothing gets made up.",
+  },
+  {
+    title: "Healthcare & Insurance",
+    desc: "Give agents a consistent, policy-grounded starting point across every support request — reducing variation and keeping responses aligned with what you've documented.",
+  },
+  {
+    title: "Internal IT Help Desks",
+    desc: "Auto-triage employee requests and draft answers from internal runbooks. Agents review and approve; the repetitive first draft is already done.",
+  },
+  {
+    title: "Any Team Drowning in Repetitive Tickets",
+    desc: "If more than half your tickets ask the same questions, SupportDesk can draft the answer from your knowledge base and put a human in the loop only for final sign-off.",
+  },
+];
+
 const ACHIEVEMENTS = [
   "Webhook ingestion with HMAC-SHA256 signature verification and 5-minute replay protection",
   "Three-stage async pipeline: classify, RAG search, and LLM draft — each stage timed and logged",
@@ -102,6 +129,22 @@ export default function About() {
                 <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">{step.title}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</div>
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Where This Gets Used */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Where This Gets Used</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+          Any team that handles customer requests has the same problem: support agents spend most of their time writing the same answers over and over. SupportDesk drafts those answers automatically — grounded in your own documentation — so agents spend their time reviewing and approving, not typing from scratch.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {USE_CASES.map(({ title, desc }) => (
+            <div key={title} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+              <div className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">{title}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</div>
             </div>
           ))}
         </div>
