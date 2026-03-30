@@ -205,9 +205,15 @@ export default function Dashboard() {
                         {Math.round(t.confidence_score * 100)}% conf
                       </p>
                     )}
-                    <p className="text-xs text-gray-400">
-                      {t.stage_count === 3 ? "pipeline done" : t.stage_count > 0 ? `stage ${t.stage_count}/3` : "queued"}
-                    </p>
+                    {t.sent_at ? (
+                      <p className="text-xs text-emerald-500">
+                        Sent {new Date(t.sent_at).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" })}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-400">
+                        {t.stage_count === 3 ? "pipeline done" : t.stage_count > 0 ? `stage ${t.stage_count}/3` : "queued"}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))
