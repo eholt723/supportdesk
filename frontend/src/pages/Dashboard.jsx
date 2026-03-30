@@ -103,6 +103,7 @@ function StatCard({ label, value }) {
 
 export default function Dashboard() {
   const [tickets, setTickets] = useState([]);
+  const [sortBy, setSortBy] = useState("urgency");
   const [events, setEvents] = useState([]);
   const [wsStatus, setWsStatus] = useState("connecting");
   const logRef = useRef(null);
@@ -155,6 +156,24 @@ export default function Dashboard() {
     logRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, [events]);
 
+  const URGENCY_ORDER = { high: 0, medium: 1, low: 2 };
+  const STATUS_ORDER = { pending: 0, sent: 1, approved: 2, discarded: 3 };
+
+  const sortedTickets = [...tickets].sort((a, b) => {
+    if (sortBy === "urgency") {
+      const u = (URGENCY_ORDER[a.urgency] ?? 3) - (URGENCY_ORDER[b.urgency] ?? 3);
+      return u !== 0 ? u : new Date(b.created_at) - new Date(a.created_at);
+    }
+    if (sortBy === "status") {
+      const s = (STATUS_ORDER[a.status] ?? 4) - (STATUS_ORDER[b.status] ?? 4);
+      return s !== 0 ? s : new Date(b.created_at) - new Date(a.created_at);
+    }
+    if (sortBy === "time") {
+      return new Date(a.created_at) - new Date(b.created_at);
+    }
+    return 0;
+  });
+
   const stats = {
     total: tickets.length,
     pending: tickets.filter((t) => t.status === "pending").length,
@@ -178,12 +197,23 @@ export default function Dashboard() {
 
         {/* Ticket queue */}
         <div className="lg:col-span-2 space-y-3">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ticket Queue</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ticket Queue</h2>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-xs bg-transparent border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 rounded-lg px-2 py-1 focus:outline-none"
+            >
+              <option value="urgency">Urgency</option>
+              <option value="status">Status</option>
+              <option value="time">Time in queue</option>
+            </select>
+          </div>
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
             {tickets.length === 0 ? (
               <p className="text-gray-500 text-sm p-6">No tickets yet.</p>
             ) : (
-              tickets.map((t) => (
+              sortedTickets.map((t) => (
                 <Link
                   key={t.id}
                   to={`/ticket/${t.id}`}
