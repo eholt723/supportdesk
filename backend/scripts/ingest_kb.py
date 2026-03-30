@@ -43,6 +43,15 @@ async def ingest():
     print(f"Loading embedding model: {MODEL_NAME}")
     embedder = TextEmbedding(MODEL_NAME)
 
+    # Explicit names so they match the demo ticket source references exactly
+    DOC_NAMES = {
+        "billing_faq": "Billing FAQ",
+        "terms_of_service": "Terms of Service",
+        "feature_overview": "Feature Overview",
+        "getting_started": "Getting Started",
+        "troubleshooting": "Troubleshooting Guide",
+    }
+
     doc_files = sorted(KB_DIR.glob("*.txt"))
     if not doc_files:
         print(f"No .txt files found in {KB_DIR}")
@@ -51,7 +60,7 @@ async def ingest():
     all_chunks = []
     for doc_file in doc_files:
         text = doc_file.read_text(encoding="utf-8")
-        doc_name = doc_file.stem.replace("_", " ").title()
+        doc_name = DOC_NAMES.get(doc_file.stem, doc_file.stem.replace("_", " ").title())
         chunks = chunk_document(text, doc_name)
         print(f"  {doc_file.name}: {len(chunks)} chunks")
         all_chunks.extend(chunks)

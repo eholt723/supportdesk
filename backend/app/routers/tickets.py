@@ -24,7 +24,8 @@ async def list_tickets():
             SELECT t.id, t.source_email, t.subject, t.body, t.type, t.urgency,
                    t.status, t.created_at,
                    d.confidence_score,
-                   (SELECT COUNT(*) FROM pipeline_runs pr WHERE pr.ticket_id = t.id) AS stage_count
+                   (SELECT COUNT(*) FROM pipeline_runs pr WHERE pr.ticket_id = t.id) AS stage_count,
+                   (SELECT COUNT(*) FROM delivery_log dl WHERE dl.ticket_id = t.id AND dl.status = 'sent') AS sent_count
             FROM tickets t
             LEFT JOIN draft_responses d ON d.ticket_id = t.id
             ORDER BY
@@ -178,6 +179,5 @@ async def reset_ticket(ticket_id: int):
             raise HTTPException(status_code=404, detail="Ticket not found")
         await conn.execute("DELETE FROM draft_responses WHERE ticket_id = $1", ticket_id)
         await conn.execute("DELETE FROM pipeline_runs WHERE ticket_id = $1", ticket_id)
-        await conn.execute("DELETE FROM delivery_log WHERE ticket_id = $1", ticket_id)
         await conn.execute("UPDATE tickets SET status = 'pending', type = NULL, urgency = NULL WHERE id = $1", ticket_id)
     return {"status": "pending"}

@@ -158,7 +158,7 @@ export default function Dashboard() {
   const stats = {
     total: tickets.length,
     pending: tickets.filter((t) => t.status === "pending").length,
-    sent: tickets.filter((t) => t.status === "sent").length,
+    sent: tickets.reduce((sum, t) => sum + (t.sent_count ?? 0), 0),
     high: tickets.filter((t) => t.urgency === "high").length,
   };
 
