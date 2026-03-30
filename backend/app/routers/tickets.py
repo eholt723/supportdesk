@@ -1,7 +1,7 @@
 import json
 
 import resend
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Path
 from fastapi.responses import StreamingResponse
 
 from app.config import settings
@@ -9,6 +9,7 @@ from app.database import get_pool
 from app.models import ApproveRequest
 from app import events as event_bus
 from app import sse
+from app.pipeline import run_pipeline
 
 router = APIRouter()
 
@@ -170,8 +171,8 @@ async def discard_ticket(ticket_id: int):
 
 
 @router.post("/{ticket_id}/reset")
-async def reset_ticket(ticket_id: int):
-    """Reset a ticket to pending so the full pipeline can be re-run (demo use)."""
+async def reset_ticket(ticket_id: int, background_tasks: BackgroundTasks):
+    """Reset a ticket to pending and re-run the full pipeline."""
     pool = await get_pool()
     async with pool.acquire() as conn:
         ticket = await conn.fetchrow("SELECT id FROM tickets WHERE id = $1", ticket_id)
@@ -180,4 +181,5 @@ async def reset_ticket(ticket_id: int):
         await conn.execute("DELETE FROM draft_responses WHERE ticket_id = $1", ticket_id)
         await conn.execute("DELETE FROM pipeline_runs WHERE ticket_id = $1", ticket_id)
         await conn.execute("UPDATE tickets SET status = 'pending', type = NULL, urgency = NULL WHERE id = $1", ticket_id)
+    background_tasks.add_task(run_pipeline, ticket_id)
     return {"status": "pending"}

@@ -180,6 +180,7 @@ export default function TicketDetail() {
   const [actionResult, setActionResult] = useState(null); // {ok, message}
   const [modalSource, setModalSource] = useState(null);
   const [resetting, setResetting] = useState(false);
+  const [runningPipeline, setRunningPipeline] = useState(false);
 
   useEffect(() => {
     get(`/api/tickets/${id}`)
@@ -235,6 +236,18 @@ export default function TicketDetail() {
       navigate("/");
     } catch (e) {
       setActionResult({ ok: false, message: e.message });
+    }
+  }
+
+  async function handleRunPipeline() {
+    setRunningPipeline(true);
+    try {
+      await post(`/api/pipeline/${id}/run`, {});
+      startStream();
+    } catch (e) {
+      setActionResult({ ok: false, message: e.message });
+    } finally {
+      setRunningPipeline(false);
     }
   }
 
@@ -301,7 +314,18 @@ export default function TicketDetail() {
 
       {/* Pipeline stages */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-2">
-        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Pipeline</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Pipeline</h2>
+          {ticket.pipeline_stages?.length === 0 && !streaming && (
+            <button
+              onClick={handleRunPipeline}
+              disabled={runningPipeline}
+              className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline disabled:opacity-50"
+            >
+              {runningPipeline ? "Starting..." : "Run pipeline"}
+            </button>
+          )}
+        </div>
         <PipelineStages stages={ticket.pipeline_stages ?? []} />
       </div>
 
