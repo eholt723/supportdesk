@@ -107,7 +107,7 @@ async def approve_ticket(ticket_id: int, body: ApproveRequest):
         resend.Emails.send({
             "from": settings.resend_from_email,
             "to": ticket["source_email"],
-            "subject": "Re: Your support request",
+            "subject": "Re: SupportDesk Ticket Update",
             "text": draft["draft_text"],
         })
         delivery_status = "sent"
