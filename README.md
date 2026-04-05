@@ -10,7 +10,7 @@ pinned: false
 
 # SupportDesk
 
-[![CI](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml/badge.svg)](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml/badge.svg)](https://github.com/eholt723/supportdesk/actions/workflows/ci.yml)
 
 AI-powered customer support automation. A webhook fires when a customer submits a ticket. The backend classifies it, searches a vector knowledge base for relevant documentation, and drafts a grounded reply — all before a human agent opens the ticket. The agent reviews, edits if needed, and approves. The reply goes out via Resend. Every pipeline stage is logged and broadcast to the live event dashboard in real time.
 
@@ -126,6 +126,10 @@ supportdesk/
 | `/kb` | Knowledge base — view documents and chunks, upload new `.txt` files |
 | `/submit` | Public ticket submission form (no login required) |
 | `/about` | Project showcase — pipeline walkthrough, tech stack, GitHub link |
+
+## Deployment
+
+Every push to `main` triggers the CI/CD workflow. If all backend tests pass and the frontend builds successfully, the repo is automatically pushed to [Hugging Face Spaces](https://huggingface.co/spaces/eholt723/SupportDesk), where it runs as a Docker container on port 7860.
 
 ## Running Locally
 
