@@ -45,12 +45,6 @@ export default function App() {
                 {label}
               </NavLink>
             ))}
-            <a
-              href="/submit"
-              className="bg-cyan-600 hover:bg-cyan-500 text-white text-sm px-3 py-1.5 rounded-lg transition-colors"
-            >
-              Submit Ticket
-            </a>
             <button
               onClick={() => setDark((d) => !d)}
               aria-label="Toggle dark mode"

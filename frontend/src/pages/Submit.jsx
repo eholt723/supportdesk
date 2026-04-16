@@ -1,23 +1,5 @@
 import { useState } from "react";
-
-const API_BASE = import.meta.env.VITE_API_URL ?? "";
-const WEBHOOK_SECRET = import.meta.env.VITE_WEBHOOK_SECRET ?? "";
-
-// HMAC-SHA256 using WebCrypto (available in all modern browsers)
-async function hmacHex(secret, message) {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
+import { submitTicket } from "../api";
 
 export default function Submit() {
   const [form, setForm] = useState({ email: "", subject: "", body: "" });
@@ -31,34 +13,8 @@ export default function Submit() {
   async function handleSubmit(e) {
     e.preventDefault();
     setStatus("sending");
-
-    const ts = Math.floor(Date.now() / 1000);
-    const payload = JSON.stringify({
-      email: form.email,
-      subject: form.subject,
-      body: form.body,
-      timestamp: ts,
-    });
-
-    let sig = "";
-    if (WEBHOOK_SECRET) {
-      sig = await hmacHex(WEBHOOK_SECRET, `${ts}.${payload}`);
-    }
-
     try {
-      const r = await fetch(`${API_BASE}/api/webhook/ticket`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Webhook-Timestamp": String(ts),
-          ...(sig ? { "X-Webhook-Signature": sig } : {}),
-        },
-        body: payload,
-      });
-      if (!r.ok) {
-        const data = await r.json().catch(() => ({}));
-        throw new Error(data.detail ?? `HTTP ${r.status}`);
-      }
+      await submitTicket(form.email, form.subject, form.body);
       setStatus("ok");
       setForm({ email: "", subject: "", body: "" });
     } catch (err) {

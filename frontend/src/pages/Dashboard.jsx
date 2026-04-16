@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { get } from "../api";
-import { wsUrl } from "../api";
+import { get, submitTicket, wsUrl } from "../api";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -83,6 +82,119 @@ const EVENT_COLORS = {
   ERROR:    "text-red-400",
   ping:     "text-gray-600",
 };
+
+// ---------------------------------------------------------------------------
+// Demo tickets
+// ---------------------------------------------------------------------------
+
+const DEMO_TICKETS = [
+  {
+    email: "alice.morgan@example.com",
+    subject: "Still being charged after I cancelled",
+    body: "I cancelled my subscription three weeks ago through Settings > Billing, but I was charged again this month. Can you please confirm the cancellation went through and process a refund?",
+    label: "Charged after cancellation",
+    tag: "billing",
+  },
+  {
+    email: "james.t@example.com",
+    subject: "CSV export produces an empty file",
+    body: "Every time I export a project as CSV the downloaded file is empty. This started after last week's platform update. I've tried hard-refreshing and a different browser with the same result.",
+    label: "CSV export is empty",
+    tag: "technical",
+  },
+  {
+    email: "dev.team@example.com",
+    subject: "Does Pro include REST API access?",
+    body: "We're considering upgrading from Starter to Pro. I want to confirm whether the Pro plan includes REST API access, what the monthly request limit is, and whether webhooks are included.",
+    label: "API access on Pro plan",
+    tag: "feature",
+  },
+  {
+    email: "sarah.k@example.com",
+    subject: "Invite button is grayed out for new members",
+    body: "I'm trying to add two new employees to our workspace but the Invite button under Settings > Members is grayed out. We're on the Starter plan — is there a seat limit I'm hitting?",
+    label: "Can't invite new members",
+    tag: "general",
+  },
+  {
+    email: "mark.r@example.com",
+    subject: "Accidentally deleted a task — can it be recovered?",
+    body: "I accidentally deleted a task that had several weeks of comments and attachments. Is there any way to recover it? It was deleted about an hour ago and I never meant to remove it permanently.",
+    label: "Recover deleted task",
+    tag: "technical",
+  },
+];
+
+const TAG_STYLES = {
+  billing: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400",
+  technical: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+  feature: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400",
+  general: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+};
+
+function DemoTicketPanel({ onSubmitted }) {
+  const [states, setStates] = useState(() => Object.fromEntries(DEMO_TICKETS.map((_, i) => [i, "idle"])));
+
+  function setState(i, s) {
+    setStates((prev) => ({ ...prev, [i]: s }));
+  }
+
+  async function handleSend(i) {
+    if (states[i] !== "idle") return;
+    setState(i, "sending");
+    const { email, subject, body } = DEMO_TICKETS[i];
+    try {
+      await submitTicket(email, subject, body);
+      setState(i, "done");
+      onSubmitted();
+    } catch {
+      setState(i, "error");
+      setTimeout(() => setState(i, "idle"), 3000);
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Demo Tickets</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+        {DEMO_TICKETS.map((t, i) => {
+          const s = states[i];
+          return (
+            <button
+              key={i}
+              onClick={() => handleSend(i)}
+              disabled={s !== "idle"}
+              className={`
+                text-left rounded-xl border px-3 py-3 transition-colors space-y-2
+                ${s === "done"
+                  ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 cursor-default"
+                  : s === "error"
+                  ? "border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 cursor-default"
+                  : s === "sending"
+                  ? "border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 opacity-60 cursor-default"
+                  : "border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-cyan-300 dark:hover:border-cyan-700 hover:bg-cyan-50/30 dark:hover:bg-cyan-900/10 cursor-pointer"
+                }
+              `}
+            >
+              <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${TAG_STYLES[t.tag]}`}>
+                {t.tag}
+              </span>
+              <p className="text-xs font-medium text-gray-800 dark:text-gray-200 leading-snug">{t.label}</p>
+              <p className={`text-xs font-medium ${
+                s === "done" ? "text-emerald-600 dark:text-emerald-400"
+                : s === "error" ? "text-red-500"
+                : s === "sending" ? "text-gray-400"
+                : "text-cyan-600 dark:text-cyan-400"
+              }`}>
+                {s === "done" ? "Submitted" : s === "error" ? "Failed — retry" : s === "sending" ? "Sending..." : "Send ticket"}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Stat card
@@ -191,6 +303,9 @@ export default function Dashboard() {
         <StatCard label="Sent" value={stats.sent} />
         <StatCard label="High Urgency" value={stats.high} />
       </div>
+
+      {/* Demo tickets */}
+      <DemoTicketPanel onSubmitted={refreshTickets} />
 
       {/* Two-column layout: ticket queue + event log */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
